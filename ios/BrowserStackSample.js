@@ -7,9 +7,9 @@ desiredCaps = {
   'browserstack.user' : 'stefanwisniewski_ReBo15',
   'browserstack.key' : '22VTbj5kBwpseMxJMv43',
     // Set app_url of the application under test
-  'app' : 'bs://ba620af083ab23cc68857acd6a136021a90b1d36',
+  'app' : 'bs://f0f2aa11e1e8171d747a06db3bd6bbd7ad05b14b',
   // Specify device and os_version for testing
-  'device' : 'iPhone XS',
+  'device' : 'iPad Pro 12.9',
   'os_version' : '12',
   // Set other BrowserStack capabilities
   'project' : 'First NodeJS project',
@@ -19,10 +19,34 @@ desiredCaps = {
 // Initialize the remote Webdriver using BrowserStack remote URL
 // and desired capabilities defined above
 driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
-// Test case for the BrowserStack sample iOS app. 
-// If you have uploaded your app, update the test case here.
+//Login test
 driver.init(desiredCaps)
-  //Write your custom code here
+  .then(function () {
+    return driver.waitForElementByName('IdentidierUsername', asserters.isDisplayed 
+    && asserters.isEnabled, 30000);
+  })
+  .then(function (userName) {
+    return userName.sendKeys("salesmanagercs");
+  })
+  .then(function () {
+    return driver.waitForElementById('Text Input', asserters.isDisplayed 
+    && asserters.isEnabled, 30000);
+  })
+  .then(function (textInput) {
+    return textInput.sendKeys("hello@browserstack.com"+"\n");
+  })
+  .then(function () {
+    return driver.waitForElementById('Text Output', asserters.isDisplayed 
+    && asserters.isEnabled, 30000);
+  })
+  .then(function (textOutput) {
+    return textOutput.text().then(function(value) {
+      if (value === "hello@browserstack.com")
+        assert(true);
+      else
+        assert(false);
+    });
+  })
   .fin(function() { 
     // Invoke driver.quit() after the test is done to indicate that the test is completed.
     return driver.quit(); 
